@@ -1,0 +1,46 @@
+﻿name: KB Auto Compile
+
+on:
+  push:
+    paths:
+      - 'kb/raw/**'
+  schedule:
+    - cron: '0 9 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  compile-kb:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Compile KB with Claude API
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: node kb/scripts/kb-compile-api.mjs
+
+      - name: Update INDEX
+        run: node kb/scripts/compile.mjs
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add kb/wiki/ kb/output/
+          if git diff --staged --quiet; then
+            echo "No changes"
+          else
+            git commit -m "chore(kb): auto-compile wiki"
+            git push
+          fi

@@ -1,0 +1,68 @@
+name: Daily AI Post Generator
+
+on:
+  schedule:
+    - cron: '0 0 * * *'   # 매일 09:00 KST (UTC 00:00)
+    - cron: '0 9 * * *'   # 매일 18:00 KST (UTC 09:00)
+  workflow_dispatch:        # GitHub Actions 탭에서 수동 실행 가능
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: 레포 체크아웃
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Node.js 설정
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 의존성 설치
+        run: npm ci
+
+      - name: API 키 확인
+        run: |
+          if [ -z "$ANTHROPIC_API_KEY" ]; then
+            echo "❌ ANTHROPIC_API_KEY 환경변수가 설정되지 않았습니다."
+            echo "GitHub Settings > Secrets and variables > Actions > New repository secret"
+            echo "Name: ANTHROPIC_API_KEY, Value: 실제 API 키"
+            exit 1
+          fi
+          echo "✅ ANTHROPIC_API_KEY 확인됨 (길이: ${#ANTHROPIC_API_KEY}자)"
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+      - name: RSS 수집 + 포스트 자동 생성
+        id: generate
+        run: npx tsx scripts/collect-and-generate.ts
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+      - name: 생성 실패 시 재시도
+        if: failure() && steps.generate.outcome == 'failure'
+        run: npx tsx scripts/collect-and-generate.ts
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+      - name: 변경사항 확인
+        id: check_changes
+        run: |
+          git add content/posts/
+          git diff --staged --quiet || echo "has_changes=true" >> $GITHUB_OUTPUT
+
+      - name: 자동 커밋 & 푸시
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          git config user.name "aiscout-bot"
+          git config user.email "bot@users.noreply.github.com"
+          # 다른 워크플로우 실행이 먼저 푸시한 경우를 대비해 pull 후 push
+          git pull --rebase origin main
+          git commit -m "auto: $(date +%Y-%m-%d) AI 도구 포스트 자동 생성"
+          git push
