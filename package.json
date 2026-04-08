@@ -7,8 +7,7 @@
     "build": "next build",
     "start": "next start",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "generate": "npx tsx scripts/collect-and-generate.ts"
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@octokit/rest": "^22.0.1",
