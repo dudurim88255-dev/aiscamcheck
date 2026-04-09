@@ -15,18 +15,18 @@ const notoSansKR = Noto_Sans_KR({
 });
 
 export const metadata: Metadata = {
-  title: { default: 'AI Scout — AI 도구 비교·리뷰·사용법', template: '%s | AI Scout' },
-  description: 'ChatGPT, Claude, Gemini 등 AI 도구를 직접 사용해보고 가격·기능·한국어 지원을 비교합니다. 국내 블로그 중 가장 빠른 AI 도구 리뷰.',
-  keywords: ['AI 도구 비교', 'AI 추천 2026', 'ChatGPT 리뷰', 'Claude 사용법', 'Gemini 비교', '무료 AI 도구', 'AI 도구 순위'],
-  authors: [{ name: 'AI Scout' }],
-  creator: 'AI Scout',
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://aiscout.vercel.app'),
+  title: { default: 'AI스캠체크 — AI·크립토 사기 팩트체크', template: '%s | AI스캠체크' },
+  description: 'AI·크립토 수익화 영상, 직접 검증했습니다',
+  keywords: ['AI 사기', '크립토 사기', '투자 사기 팩트체크', '자동매매 봇 사기', 'AI 수익화 과장', '노코드 사기'],
+  authors: [{ name: 'AI스캠체크' }],
+  creator: 'AI스캠체크',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://aiscamcheck.vercel.app'),
   openGraph: {
     type: 'website',
     locale: 'ko_KR',
-    siteName: 'AI Scout',
+    siteName: 'AI스캠체크',
   },
-  themeColor: '#f59e0b',
+  themeColor: '#ef4444',
   verification: { google: 'de9TSsBBneQps0DJ0It1vzBsUTeGLGOoqqjAvSsx3fI' },
 };
 

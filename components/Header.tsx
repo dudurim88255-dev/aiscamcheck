@@ -4,12 +4,10 @@ import { useState } from 'react';
 import SearchBar from './SearchBar';
 
 const CATEGORIES = [
-  { slug: 'writing-ai', label: '글쓰기 AI' },
-  { slug: 'image-ai', label: '이미지 AI' },
-  { slug: 'video-ai', label: '영상 AI' },
-  { slug: 'code-ai', label: '코딩 AI' },
-  { slug: 'productivity-ai', label: '생산성 AI' },
-  { slug: 'open-source-ai', label: '오픈소스 AI' },
+  { slug: 'crypto-bot', label: '크립토 봇 사기' },
+  { slug: 'ai-income', label: 'AI 수익화 과장' },
+  { slug: 'nocode-scam', label: '노코드 수익화 사기' },
+  { slug: 'investment-scam', label: '투자 사기' },
 ];
 
 export default function Header() {
@@ -20,8 +18,8 @@ export default function Header() {
       className="sticky top-0 z-50">
       <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <span style={{ color: 'var(--accent-amber)' }} className="text-xl font-bold">⬡</span>
-          <span className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>AI Scout</span>
+          <span style={{ color: 'var(--accent-amber)' }} className="text-xl font-bold">⚠</span>
+          <span className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>AI스캠체크</span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-6">

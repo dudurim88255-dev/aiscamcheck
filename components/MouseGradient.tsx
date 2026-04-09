@@ -29,7 +29,7 @@ export default function MouseGradient() {
 
       el.style.background = `
         radial-gradient(600px circle at ${x}% ${y}%,
-          rgba(245, 158, 11, 0.10) 0%,
+          rgba(239, 68, 68, 0.10) 0%,
           rgba(99, 102, 241, 0.06) 35%,
           transparent 70%
         )

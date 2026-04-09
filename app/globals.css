@@ -7,8 +7,8 @@
   --bg-primary: #0a0a0f;
   --bg-secondary: #111118;
   --bg-card: #16161f;
-  --accent-amber: #f59e0b;
-  --accent-amber-light: #fcd34d;
+  --accent-amber: #ef4444;
+  --accent-amber-light: #fca5a5;
   --accent-green: #10b981;
   --text-primary: #e2e8f0;
   --text-secondary: #cbd5e1;
@@ -108,7 +108,7 @@ main {
   border-left: 3px solid var(--accent-amber);
   padding: 0.75rem 1.2rem;
   margin: 1.5rem 0;
-  background: rgba(245,158,11,0.04);
+  background: rgba(239,68,68,0.04);
   border-radius: 0 8px 8px 0;
   color: var(--text-muted);
   font-style: normal;
@@ -142,7 +142,7 @@ main {
 }
 
 .prose code {
-  background: rgba(245,158,11,0.08);
+  background: rgba(239,68,68,0.08);
   color: var(--accent-amber-light);
   padding: 0.15em 0.45em;
   border-radius: 4px;
@@ -189,7 +189,7 @@ main {
 }
 
 .prose tr:hover td {
-  background: rgba(245,158,11,0.02);
+  background: rgba(239,68,68,0.02);
 }
 
 .prose strong {
@@ -209,8 +209,8 @@ main {
 
 /* 하이라이트 박스 */
 .highlight-box {
-  background: rgba(245,158,11,0.05);
-  border: 1px solid rgba(245,158,11,0.2);
+  background: rgba(239,68,68,0.05);
+  border: 1px solid rgba(239,68,68,0.2);
   border-radius: 10px;
   padding: 1.1rem 1.4rem;
   margin: 1.5rem 0;
