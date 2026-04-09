@@ -1,0 +1,30 @@
+# .github/workflows/daily-factcheck.yml
+name: Daily Factcheck
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # 매일 오전 9시 KST (UTC 00:00)
+  workflow_dispatch:       # 수동 실행 가능
+
+jobs:
+  factcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 패키지 설치
+        run: npm ci
+
+      - name: YouTube 수집 + Claude 초안 생성 + PR 생성
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPO_OWNER: ${{ github.repository_owner }}
+          GITHUB_REPO_NAME: ${{ github.event.repository.name }}
+        run: npm run generate
