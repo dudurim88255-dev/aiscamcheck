@@ -27,16 +27,39 @@ export interface PostMeta {
   coverImage?: string;
 }
 
-const POSTS_DIR = path.join(process.cwd(), 'content', 'posts');
+// 스캠체크 전용 프론트매터 타입 (AI스캠체크 포스트용)
+export interface PostFrontmatter {
+  title: string;
+  date: string;
+  category: string;
+  riskScore: number;
+  verdict: 'scam' | 'misleading' | 'normal';
+  youtubeUrl: string;
+  channelTitle: string;
+  thumbnailUrl: string;
+  aiGenerated: boolean;
+}
+
+// 스캠체크 포스트 타입
+export interface Post {
+  slug: string;
+  frontmatter: PostFrontmatter;
+  content: string;
+}
+
+// aiscout 호환 포스트 디렉터리 (content/posts/)
+const LEGACY_POSTS_DIR = path.join(process.cwd(), 'content', 'posts');
+// 스캠체크 포스트 디렉터리 (posts/)
+const POSTS_DIR = path.join(process.cwd(), 'posts');
 
 export function getAllPosts(): PostMeta[] {
-  if (!fs.existsSync(POSTS_DIR)) return [];
+  if (!fs.existsSync(LEGACY_POSTS_DIR)) return [];
 
   return fs
-    .readdirSync(POSTS_DIR)
+    .readdirSync(LEGACY_POSTS_DIR)
     .filter(f => f.endsWith('.mdx'))
     .map(filename => {
-      const raw = fs.readFileSync(path.join(POSTS_DIR, filename), 'utf-8');
+      const raw = fs.readFileSync(path.join(LEGACY_POSTS_DIR, filename), 'utf-8');
       const { data } = matter(raw);
       return {
         slug: data.slug ?? filename.replace('.mdx', ''),
@@ -57,11 +80,94 @@ export function getAllPosts(): PostMeta[] {
     .sort((a, b) => b.date.localeCompare(a.date));
 }
 
-export function getPostBySlug(slug: string): { meta: PostMeta; content: string } | null {
+// 스캠체크 포스트 전체 조회 (posts/ 디렉터리)
+export function getAllScamPosts(): Post[] {
+  if (!fs.existsSync(POSTS_DIR)) return [];
+
+  return fs
+    .readdirSync(POSTS_DIR)
+    .filter(f => f.endsWith('.mdx'))
+    .map(filename => {
+      const raw = fs.readFileSync(path.join(POSTS_DIR, filename), 'utf-8');
+      const { data, content } = matter(raw);
+      const slug = (data.slug as string | undefined) ?? filename.replace('.mdx', '');
+      return {
+        slug,
+        frontmatter: {
+          title: (data.title as string | undefined) ?? '',
+          date: (data.date as string | undefined) ?? '',
+          category: (data.category as string | undefined) ?? '',
+          riskScore: (data.riskScore as number | undefined) ?? 0,
+          verdict: ((data.verdict as string | undefined) ?? 'normal') as PostFrontmatter['verdict'],
+          youtubeUrl: (data.youtubeUrl as string | undefined) ?? '',
+          channelTitle: (data.channelTitle as string | undefined) ?? '',
+          thumbnailUrl: (data.thumbnailUrl as string | undefined) ?? '',
+          aiGenerated: (data.aiGenerated as boolean | undefined) ?? false,
+        },
+        content,
+      } satisfies Post;
+    });
+}
+
+// 스캠체크 단일 포스트 조회
+export function getScamPostBySlug(slug: string): Post | null {
   if (!fs.existsSync(POSTS_DIR)) return null;
 
-  // 파일명 = slug.mdx 규칙이므로 O(1) 직접 접근 먼저 시도
+  // 파일명 = slug.mdx 규칙으로 O(1) 직접 접근
   const directPath = path.join(POSTS_DIR, `${slug}.mdx`);
+  if (fs.existsSync(directPath)) {
+    const raw = fs.readFileSync(directPath, 'utf-8');
+    const { data, content } = matter(raw);
+    return {
+      slug: (data.slug as string | undefined) ?? slug,
+      frontmatter: {
+        title: (data.title as string | undefined) ?? '',
+        date: (data.date as string | undefined) ?? '',
+        category: (data.category as string | undefined) ?? '',
+        riskScore: (data.riskScore as number | undefined) ?? 0,
+        verdict: ((data.verdict as string | undefined) ?? 'normal') as PostFrontmatter['verdict'],
+        youtubeUrl: (data.youtubeUrl as string | undefined) ?? '',
+        channelTitle: (data.channelTitle as string | undefined) ?? '',
+        thumbnailUrl: (data.thumbnailUrl as string | undefined) ?? '',
+        aiGenerated: (data.aiGenerated as boolean | undefined) ?? false,
+      },
+      content,
+    };
+  }
+
+  // fallback: frontmatter slug로 전체 스캔
+  const files = fs.readdirSync(POSTS_DIR).filter(f => f.endsWith('.mdx'));
+  const file = files.find(f => {
+    const raw = fs.readFileSync(path.join(POSTS_DIR, f), 'utf-8');
+    const { data } = matter(raw);
+    return ((data.slug as string | undefined) ?? f.replace('.mdx', '')) === slug;
+  });
+  if (!file) return null;
+
+  const raw = fs.readFileSync(path.join(POSTS_DIR, file), 'utf-8');
+  const { data, content } = matter(raw);
+  return {
+    slug: (data.slug as string | undefined) ?? slug,
+    frontmatter: {
+      title: (data.title as string | undefined) ?? '',
+      date: (data.date as string | undefined) ?? '',
+      category: (data.category as string | undefined) ?? '',
+      riskScore: (data.riskScore as number | undefined) ?? 0,
+      verdict: ((data.verdict as string | undefined) ?? 'normal') as PostFrontmatter['verdict'],
+      youtubeUrl: (data.youtubeUrl as string | undefined) ?? '',
+      channelTitle: (data.channelTitle as string | undefined) ?? '',
+      thumbnailUrl: (data.thumbnailUrl as string | undefined) ?? '',
+      aiGenerated: (data.aiGenerated as boolean | undefined) ?? false,
+    },
+    content,
+  };
+}
+
+export function getPostBySlug(slug: string): { meta: PostMeta; content: string } | null {
+  if (!fs.existsSync(LEGACY_POSTS_DIR)) return null;
+
+  // 파일명 = slug.mdx 규칙이므로 O(1) 직접 접근 먼저 시도
+  const directPath = path.join(LEGACY_POSTS_DIR, `${slug}.mdx`);
   if (fs.existsSync(directPath)) {
     const raw = fs.readFileSync(directPath, 'utf-8');
     const { data, content } = matter(raw);
@@ -88,15 +194,15 @@ export function getPostBySlug(slug: string): { meta: PostMeta; content: string }
   }
 
   // fallback: frontmatter slug로 전체 스캔 (파일명이 slug와 다른 경우)
-  const files = fs.readdirSync(POSTS_DIR).filter(f => f.endsWith('.mdx'));
+  const files = fs.readdirSync(LEGACY_POSTS_DIR).filter(f => f.endsWith('.mdx'));
   const file = files.find(f => {
-    const raw = fs.readFileSync(path.join(POSTS_DIR, f), 'utf-8');
+    const raw = fs.readFileSync(path.join(LEGACY_POSTS_DIR, f), 'utf-8');
     const { data } = matter(raw);
     return (data.slug ?? f.replace('.mdx', '')) === slug;
   });
   if (!file) return null;
 
-  const raw = fs.readFileSync(path.join(POSTS_DIR, file), 'utf-8');
+  const raw = fs.readFileSync(path.join(LEGACY_POSTS_DIR, file), 'utf-8');
   const { data, content } = matter(raw);
 
   return {
@@ -121,6 +227,10 @@ export function getPostBySlug(slug: string): { meta: PostMeta; content: string }
 
 export function getPostsByCategory(category: string): PostMeta[] {
   return getAllPosts().filter(p => p.category === category);
+}
+
+export function getScamPostsByCategory(category: string): Post[] {
+  return getAllScamPosts().filter(p => p.frontmatter.category === category);
 }
 
 export function getPostsByTag(tag: string): PostMeta[] {
