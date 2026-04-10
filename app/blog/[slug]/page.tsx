@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { getAllPosts, getPostBySlug, getRelatedPosts } from '@/lib/posts';
-import { PostCard } from '@/components/PostCard';
+import LegacyPostCard from '@/components/LegacyPostCard';
 import { buildPostMetadata, buildArticleJsonLd, buildBreadcrumbJsonLd, buildOgImageUrl, SITE_URL, SITE_NAME } from '@/lib/seo';
 import { TableOfContents } from '@/components/TableOfContents';
 import { AdBanner } from '@/components/AdBanner';
@@ -158,7 +158,7 @@ export default async function BlogPostPage({ params }: Props) {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {relatedPosts.map((p) => (
-                <PostCard key={p.slug} post={p} />
+                <LegacyPostCard key={p.slug} post={p} />
               ))}
             </div>
           </section>

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { getAllPosts } from '@/lib/posts';
 import { CATEGORY_MAP } from '@/lib/categories';
-import { PostCard } from '@/components/PostCard';
+import LegacyPostCard from '@/components/LegacyPostCard';
 import { SITE_NAME, SITE_URL } from '@/lib/seo';
 import Link from 'next/link';
 
@@ -63,7 +63,7 @@ export default function BlogIndexPage() {
       {/* 포스트 그리드 */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {posts.map((post) => (
-          <PostCard key={post.slug} post={post} />
+          <LegacyPostCard key={post.slug} post={post} />
         ))}
       </div>
     </div>
