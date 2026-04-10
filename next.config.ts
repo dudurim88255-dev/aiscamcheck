@@ -5,7 +5,10 @@ const nextConfig: NextConfig = {
   // 이미지 최적화
   images: {
     formats: ['image/webp', 'image/avif'],
-    remotePatterns: [],
+    remotePatterns: [
+      { protocol: 'https', hostname: 'i.ytimg.com' },
+      { protocol: 'https', hostname: '*.ytimg.com' },
+    ],
   },
   // 프로덕션에서 console.log 제거
   compiler: {
