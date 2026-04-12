@@ -20,17 +20,16 @@ export default function MouseGradient() {
     };
 
     const animate = () => {
-      // 부드럽게 따라오기 (lerp)
       cx += (tx - cx) * 0.07;
       cy += (ty - cy) * 0.07;
 
       const x = (cx / window.innerWidth) * 100;
       const y = (cy / window.innerHeight) * 100;
 
+      // 다크 배경에서 orange-red 광원 (BASIC Agency brand color)
       el.style.background = `
         radial-gradient(600px circle at ${x}% ${y}%,
-          rgba(239, 68, 68, 0.10) 0%,
-          rgba(99, 102, 241, 0.06) 35%,
+          rgba(232, 52, 26, 0.06) 0%,
           transparent 70%
         )
       `;
