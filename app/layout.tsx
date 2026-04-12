@@ -1,17 +1,19 @@
 ﻿import type { Metadata } from 'next';
-import { Noto_Sans_KR } from 'next/font/google';
+import { Fraunces } from 'next/font/google';
 import Script from 'next/script';
 import { Analytics } from '@vercel/analytics/next';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import MouseGradient from '@/components/MouseGradient';
 import './globals.css';
+import { Providers } from './providers';
 
-const notoSansKR = Noto_Sans_KR({
+// Fraunces: BASIC Agency editorial display serif (variable, opsz 9~144)
+const fraunces = Fraunces({
   subsets: ['latin'],
-  weight: ['400', '500', '700'],
+  axes: ['opsz', 'SOFT', 'WONK'],
   display: 'swap',
-  variable: '--font-noto',
+  variable: '--font-fraunces',
 });
 
 export const metadata: Metadata = {
@@ -32,7 +34,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ko" className={notoSansKR.variable}>
+    <html lang="ko" className={fraunces.variable}>
       <head>
         {process.env.NEXT_PUBLIC_ADSENSE_ACCOUNT && (
           <meta name="google-adsense-account" content={process.env.NEXT_PUBLIC_ADSENSE_ACCOUNT} />
@@ -63,10 +65,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         )}
       </head>
       <body>
-        <MouseGradient />
-        <Header />
-        <main>{children}</main>
-        <Footer />
+        <Providers>
+          <MouseGradient />
+          <Header />
+          <main>{children}</main>
+          <Footer />
+        </Providers>
         <Analytics />
       </body>
     </html>

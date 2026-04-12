@@ -14,12 +14,40 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header style={{ background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border)' }}
-      className="sticky top-0 z-50">
+    <header
+      style={{
+        background: 'var(--sc-bg-page)',
+        borderBottom: '1px solid var(--sc-border)',
+      }}
+      className="sticky top-0 z-50"
+    >
       <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <span style={{ color: 'var(--accent-amber)' }} className="text-xl font-bold">⚠</span>
-          <span className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>AI스캠체크</span>
+          {/* SCAM 레드 마커 */}
+          <span
+            style={{
+              background: 'var(--sc-accent)',
+              color: '#f0ebe1',
+              fontSize: '0.6rem',
+              fontWeight: 700,
+              letterSpacing: '0.08em',
+              padding: '2px 6px',
+              borderRadius: 2,
+            }}
+          >
+            SCAM
+          </span>
+          <span
+            style={{
+              fontFamily: 'var(--sc-font-display)',
+              fontSize: '1.05rem',
+              fontWeight: 700,
+              color: 'var(--sc-text-primary)',
+              letterSpacing: '-0.01em',
+            }}
+          >
+            AI스캠체크
+          </span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-6">
@@ -27,8 +55,13 @@ export default function Header() {
             <Link
               key={cat.slug}
               href={`/category/${cat.slug}`}
-              className="text-sm transition-colors hover:opacity-80"
-              style={{ color: 'var(--text-secondary)' }}
+              className="text-sm transition-opacity hover:opacity-60"
+              style={{
+                color: 'var(--sc-text-muted)',
+                fontSize: '0.78rem',
+                fontWeight: 500,
+                letterSpacing: '0.01em',
+              }}
             >
               {cat.label}
             </Link>
@@ -40,7 +73,7 @@ export default function Header() {
           <button
             className="md:hidden"
             onClick={() => setMenuOpen(!menuOpen)}
-            style={{ color: 'var(--text-secondary)' }}
+            style={{ color: 'var(--sc-text-muted)', fontSize: '1.1rem' }}
           >
             ☰
           </button>
@@ -48,14 +81,21 @@ export default function Header() {
       </div>
 
       {menuOpen && (
-        <div style={{ background: 'var(--bg-secondary)', borderTop: '1px solid var(--border)' }}
-          className="md:hidden px-4 py-3 flex flex-col gap-3">
+        <div
+          style={{
+            background: 'var(--sc-bg-card)',
+            borderTop: '1px solid var(--sc-border)',
+          }}
+          className="md:hidden px-4 py-3 flex flex-col gap-3"
+        >
           {CATEGORIES.map(cat => (
             <Link
               key={cat.slug}
               href={`/category/${cat.slug}`}
-              className="text-sm"
-              style={{ color: 'var(--text-secondary)' }}
+              style={{
+                color: 'var(--sc-text-secondary)',
+                fontSize: '0.85rem',
+              }}
               onClick={() => setMenuOpen(false)}
             >
               {cat.label}
