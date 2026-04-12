@@ -3,7 +3,7 @@ import { searchSuspiciousVideos, getChannelSubscriberCount, parseVideoSignals, P
 import { calculateRiskScore, classifyVerdict } from '../lib/risk-score';
 
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY!;
-const SCORE_THRESHOLD = 70;
+const SCORE_THRESHOLD = 50;
 
 export interface ScoredVideo extends ParsedVideo {
   riskScore: number;
