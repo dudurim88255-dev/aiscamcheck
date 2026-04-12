@@ -8,7 +8,7 @@ interface Result {
   summary: string;
   category: string;
   date: string;
-  difficulty: string;
+  riskScore?: number;
 }
 
 export default function SearchBar() {
@@ -48,49 +48,89 @@ export default function SearchBar() {
   }, [query]);
 
   return (
-    <div ref={ref} className="relative w-full max-w-md">
-      <div style={{ background: '#131a2e', border: '1px solid #1e2a42', borderRadius: 10 }} className="flex items-center px-3 gap-2">
-        <span style={{ color: '#8b96b0', fontSize: 16 }}>🔍</span>
+    <div ref={ref} className="relative w-full max-w-xs">
+      <div
+        style={{
+          background: 'var(--sc-bg-surface)',
+          border: '1px solid var(--sc-border)',
+          borderRadius: 6,
+        }}
+        className="flex items-center px-3 gap-2"
+      >
+        <span style={{ color: 'var(--sc-text-muted)', fontSize: 13 }}>🔍</span>
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="논문 제목, 키워드 검색..."
-          className="flex-1 bg-transparent py-2.5 text-sm outline-none"
-          style={{ color: '#e8edf5' }}
+          placeholder="채널명, 키워드 검색..."
+          className="flex-1 bg-transparent py-2 text-sm outline-none"
+          style={{ color: 'var(--sc-text-primary)' }}
         />
-        {loading && <span style={{ color: '#8b96b0', fontSize: 12 }}>...</span>}
+        {loading && <span style={{ color: 'var(--sc-text-muted)', fontSize: 11 }}>...</span>}
         {query && !loading && (
-          <button onClick={() => { setQuery(''); setResults([]); setOpen(false); }} style={{ color: '#8b96b0', fontSize: 16, lineHeight: 1 }}>✕</button>
+          <button
+            onClick={() => { setQuery(''); setResults([]); setOpen(false); }}
+            style={{ color: 'var(--sc-text-muted)', fontSize: 14, lineHeight: 1 }}
+          >
+            ✕
+          </button>
         )}
       </div>
 
       {open && results.length > 0 && (
         <div
-          style={{ position: 'absolute', top: '100%', left: 0, right: 0, marginTop: 6, background: '#131a2e', border: '1px solid #1e2a42', borderRadius: 12, zIndex: 100, maxHeight: 420, overflowY: 'auto' }}
+          style={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            right: 0,
+            marginTop: 6,
+            background: 'var(--sc-bg-card)',
+            border: '1px solid var(--sc-border)',
+            borderRadius: 6,
+            zIndex: 100,
+            maxHeight: 360,
+            overflowY: 'auto',
+          }}
         >
           {results.map((r) => (
             <Link
               key={r.slug}
-              href={`/blog/${r.slug}`}
+              href={`/posts/${r.slug}`}
               onClick={() => { setOpen(false); setQuery(''); }}
-              className="block px-4 py-3 hover:bg-[#1a2340] transition-colors"
-              style={{ borderBottom: '1px solid #1e2a42' }}
+              className="block px-4 py-3 transition-colors"
+              style={{ borderBottom: '1px solid var(--sc-border)' }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--sc-bg-surface)')}
+              onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
             >
-              <div className="flex items-center gap-2 mb-1">
-                <span style={{ background: 'rgba(79,209,197,0.1)', color: '#4fd1c5', borderRadius: 20, padding: '1px 8px', fontSize: 11 }}>{r.category}</span>
-                <span style={{ color: '#4a5568', fontSize: 11 }}>{r.date}</span>
-              </div>
-              <p className="text-sm font-semibold leading-snug" style={{ color: '#e8edf5' }}>{r.title}</p>
-              <p className="text-xs mt-1 line-clamp-1" style={{ color: '#8b96b0' }}>{r.summary}</p>
+              <p className="text-sm font-semibold leading-snug" style={{ color: 'var(--sc-text-primary)' }}>
+                {r.title}
+              </p>
+              <p style={{ color: 'var(--sc-text-muted)', fontSize: '0.75rem', marginTop: 2 }}>
+                {r.category} · {r.date}
+              </p>
             </Link>
           ))}
         </div>
       )}
 
       {open && query.length >= 2 && results.length === 0 && !loading && (
-        <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, marginTop: 6, background: '#131a2e', border: '1px solid #1e2a42', borderRadius: 12, padding: '16px', textAlign: 'center', zIndex: 100 }}>
-          <p style={{ color: '#8b96b0', fontSize: 14 }}>검색 결과가 없습니다</p>
+        <div
+          style={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            right: 0,
+            marginTop: 6,
+            background: 'var(--sc-bg-card)',
+            border: '1px solid var(--sc-border)',
+            borderRadius: 6,
+            padding: 16,
+            textAlign: 'center',
+            zIndex: 100,
+          }}
+        >
+          <p style={{ color: 'var(--sc-text-muted)', fontSize: 13 }}>검색 결과가 없습니다</p>
         </div>
       )}
     </div>
