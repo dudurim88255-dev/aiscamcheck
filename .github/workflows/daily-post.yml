@@ -39,22 +39,24 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 
-      - name: RSS 수집 + 포스트 자동 생성
+      - name: YouTube 수집 + 포스트 자동 생성
         id: generate
         run: npx tsx scripts/collect-and-generate.ts
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
 
       - name: 생성 실패 시 재시도
         if: failure() && steps.generate.outcome == 'failure'
         run: npx tsx scripts/collect-and-generate.ts
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
 
       - name: 변경사항 확인
         id: check_changes
         run: |
-          git add content/posts/
+          git add posts/
           git diff --staged --quiet || echo "has_changes=true" >> $GITHUB_OUTPUT
 
       - name: 자동 커밋 & 푸시
